@@ -65,8 +65,8 @@ class TrainerStorageLoaderTest {
 
     @Test
     void testLoadValidTrainers() {
-        Trainer trainer1 = new Trainer(1L, "Alice", "Brown", "Strength Training");
-        Trainer trainer2 = new Trainer(2L, "Bob", "Smith", "Yoga");
+        Trainer trainer1 = new Trainer(1L, "Alice", "Brown", "Strength Training",true);
+        Trainer trainer2 = new Trainer(2L, "Bob", "Smith", "Yoga",true);
         try (MockedStatic<FileValidator> fileValidatorMock = mockStatic(FileValidator.class)) {
             fileValidatorMock.when(() -> FileValidator.isFileValid(resource, validTrainerFilePath)).thenReturn(true);
             when(jsonFileReader.readFromFile(resource, Trainer.class)).thenReturn(List.of(trainer1, trainer2));

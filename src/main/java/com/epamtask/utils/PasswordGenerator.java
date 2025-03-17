@@ -1,6 +1,6 @@
 package com.epamtask.utils;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 
 import java.util.UUID;
 

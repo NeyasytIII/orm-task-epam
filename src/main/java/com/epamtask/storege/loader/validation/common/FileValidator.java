@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader.validation.common;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 

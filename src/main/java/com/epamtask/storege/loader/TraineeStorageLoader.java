@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.exception.InvalidDataException;
 import com.epamtask.model.Trainee;
 import com.epamtask.storege.loader.filereaders.JsonFileReader;
@@ -59,6 +59,6 @@ public class TraineeStorageLoader {
             throw new InvalidDataException("UserName verification errors: " + String.join("; ", userNameErrors));
         }
 
-        trainees.forEach(trainee -> traineeStorage.put(trainee.getUserId(), trainee));
+        trainees.forEach(trainee -> traineeStorage.put(trainee.getTraineeId(), trainee));
     }
 }

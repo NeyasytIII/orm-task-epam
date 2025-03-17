@@ -11,7 +11,7 @@ class TrainerValidatorTest {
 
     @Test
     void testValidTrainer() {
-        Trainer trainer = new Trainer(1L, "Alice", "Smith", "Yoga");
+        Trainer trainer = new Trainer(1L, "Alice", "Smith", "Yoga",true);
         trainer.setUserName("Alice.Smith");
         trainer.setPassword("secret");
         List<String> errors = trainerValidator.validate(List.of(trainer));
@@ -20,7 +20,7 @@ class TrainerValidatorTest {
 
     @Test
     void testInvalidTrainer() {
-        Trainer trainer = new Trainer(null, "", " ", "");
+        Trainer trainer = new Trainer(null, "", " ", "",true);
         trainer.setUserName("");
         trainer.setPassword("");
         List<String> errors = trainerValidator.validate(List.of(trainer));

@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader.filereaders;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;

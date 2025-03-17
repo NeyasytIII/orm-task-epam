@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader.validation.common;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.model.Trainer;
 import com.epamtask.model.Trainee;
 import com.epamtask.utils.UserNameGenerator;
@@ -40,9 +40,9 @@ public class GenericUserNameVerifier<T> {
     @Loggable
     private Long extractId(T user) {
         if (user instanceof Trainee) {
-            return ((Trainee) user).getUserId();
+            return ((Trainee) user).getTraineeId();
         } else if (user instanceof Trainer) {
-            return ((Trainer) user).getUserId();
+            return ((Trainer) user).getTrainerId();
         }
         throw new IllegalArgumentException("Unknown user type");
     }

@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader.validation.uservalidation;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.model.Trainee;
 import com.epamtask.storege.loader.validation.common.DateValidator;
 
@@ -20,7 +20,7 @@ public class TraineeValidator {
     public List<String> validate(List<Trainee> trainees) {
         return trainees.stream()
                 .flatMap(t -> new UserValidationBuilder<Trainee>()
-                        .addRule(tr -> tr.getUserId() != null && tr.getUserId() > 0, "Invalid trainee ID")
+                        .addRule(tr -> tr.getTraineeId() != null && tr.getTraineeId() > 0, "Invalid trainee ID")
                         .addRule(tr -> tr.getFirstName() != null && !tr.getFirstName().isBlank(), "First name is invalid")
                         .addRule(tr -> tr.getLastName() != null && !tr.getLastName().isBlank(), "Last name is invalid")
                         .addRule(tr -> tr.getUserName() != null && !tr.getUserName().isBlank(), "UserName is invalid")

@@ -24,7 +24,7 @@ class TraineeDAOImplTest {
     @Test
     void testCreate() {
         Trainee trainee = new Trainee();
-        trainee.setUserId(1L);
+        trainee.setTraineeId(1L);
         trainee.setUserName("John.Doe");
 
         traineeDAO.create(1L, trainee);
@@ -36,7 +36,7 @@ class TraineeDAOImplTest {
     @Test
     void testUpdate() {
         Trainee trainee = new Trainee();
-        trainee.setUserId(2L);
+        trainee.setTraineeId(2L);
         trainee.setUserName("Jane.Doe");
         traineeStorage.put(2L, trainee);
 
@@ -49,7 +49,7 @@ class TraineeDAOImplTest {
     @Test
     void testFindById() {
         Trainee trainee = new Trainee();
-        trainee.setUserId(3L);
+        trainee.setTraineeId(3L);
         trainee.setUserName("Bob.Smith");
         traineeStorage.put(3L, trainee);
 
@@ -62,7 +62,7 @@ class TraineeDAOImplTest {
     @Test
     void testDeleteById() {
         Trainee trainee = new Trainee();
-        trainee.setUserId(4L);
+        trainee.setTraineeId(4L);
         trainee.setUserName("Alice.Doe");
         traineeStorage.put(4L, trainee);
 
@@ -74,20 +74,20 @@ class TraineeDAOImplTest {
     @Test
     void testFindByUsername() {
         Trainee trainee = new Trainee();
-        trainee.setUserId(5L);
+        trainee.setTraineeId(5L);
         trainee.setUserName("Max.Power");
         traineeStorage.put(5L, trainee);
 
         Optional<Trainee> result = traineeDAO.findByUsername("Max.Power");
 
         assertTrue(result.isPresent());
-        assertEquals(5L, result.get().getUserId());
+        assertEquals(5L, result.get().getTraineeId());
     }
 
     @Test
     void testGetAllUsers() {
         Trainee t1 = new Trainee();
-        t1.setUserId(10L);
+        t1.setTraineeId(10L);
         traineeStorage.put(10L, t1);
 
         Map<Long, Trainee> allUsers = traineeDAO.getAll();

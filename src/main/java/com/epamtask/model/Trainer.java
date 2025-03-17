@@ -1,33 +1,86 @@
 package com.epamtask.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+@Entity
 public class Trainer extends User {
-    private Long userId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("userId")
+    private Long trainerId;
+
+    @Column(nullable = false)
     private String specialization;
 
-    public Trainer(Long userId, String firstName, String lastName, String specialization) {
-        super(firstName, lastName);
-        this.userId = userId;
+    @ManyToOne
+    @JoinColumn(name = "specialization_fk")
+    private TrainingTypeEntity specializationType;
+
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Training> trainings = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "trainer_trainee",
+            joinColumns = @JoinColumn(name = "trainer_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainee_id")
+    )
+    private Set<Trainee> trainees = new HashSet<>();
+
+    public Trainer() {
+    }
+
+    public Trainer(Long trainerId, String firstName, String lastName, String specialization, boolean isActive) {
+        super(firstName, lastName, isActive);
+        this.trainerId = trainerId;
         this.specialization = specialization;
     }
-    public Trainer(){}
 
+    public Long getTrainerId() {
+        return trainerId;
+    }
 
-    public Long getUserId() {
-        return userId;
+    public void setTrainerId(Long trainerId) {
+        this.trainerId = trainerId;
     }
 
     public String getSpecialization() {
         return specialization;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
+    }
+
+    public TrainingTypeEntity getSpecializationType() {
+        return specializationType;
+    }
+
+    public void setSpecializationType(TrainingTypeEntity specializationType) {
+        this.specializationType = specializationType;
+    }
+
+    public List<Training> getTrainings() {
+        return trainings;
+    }
+
+    public void setTrainings(List<Training> trainings) {
+        this.trainings = trainings;
+    }
+
+    public Set<Trainee> getTrainees() {
+        return trainees;
+    }
+
+    public void setTrainees(Set<Trainee> trainees) {
+        this.trainees = trainees;
     }
 
     @Override
@@ -35,24 +88,26 @@ public class Trainer extends User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trainer trainer = (Trainer) o;
-        return Objects.equals(userId, trainer.userId) && Objects.equals(specialization, trainer.specialization);
+        return Objects.equals(trainerId, trainer.trainerId)
+                && Objects.equals(specialization, trainer.specialization);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, specialization);
+        return Objects.hash(trainerId, specialization);
     }
 
     @Override
     public String toString() {
         return "Trainer{" +
-                "userId=" + userId +
-                ", firstName='" + this.getFirstName() + '\'' +
-                ", lastName='" + this.getLastName() + '\'' +
-                ", userName='" + this.getUserName() + '\'' +
-                ", Specialization='" + specialization + '\'' +
-                ", password='" + this.getPassword() + '\'' +
-                ", isActive=" + this.isActive() +
+                "userId=" + trainerId +
+                ", firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", userName='" + getUserName() + '\'' +
+                ", specialization='" + specialization + '\'' +
+                ", specializationType=" + specializationType +
+                ", password='" + getPassword() + '\'' +
+                ", isActive=" + isActive() +
                 '}';
     }
 }

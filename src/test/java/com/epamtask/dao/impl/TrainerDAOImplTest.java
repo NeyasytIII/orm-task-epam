@@ -24,7 +24,7 @@ class TrainerDAOImplTest {
     @Test
     void testCreate() {
         Trainer trainer = new Trainer();
-        trainer.setUserId(1L);
+        trainer.setTrainerId(1L);
         trainer.setUserName("Anna.Doe");
 
         trainerDAO.create(1L, trainer);
@@ -36,7 +36,7 @@ class TrainerDAOImplTest {
     @Test
     void testFindById() {
         Trainer trainer = new Trainer();
-        trainer.setUserId(2L);
+        trainer.setTrainerId(2L);
         trainer.setUserName("Sam.Smith");
         trainerStorage.put(2L, trainer);
 
@@ -49,20 +49,20 @@ class TrainerDAOImplTest {
     @Test
     void testFindByUsername() {
         Trainer trainer = new Trainer();
-        trainer.setUserId(3L);
+        trainer.setTrainerId(3L);
         trainer.setUserName("Coach.John");
         trainerStorage.put(3L, trainer);
 
         Optional<Trainer> result = trainerDAO.findByUsername("Coach.John");
 
         assertTrue(result.isPresent());
-        assertEquals(3L, result.get().getUserId());
+        assertEquals(3L, result.get().getTrainerId());
     }
 
     @Test
     void testUpdate() {
         Trainer trainer = new Trainer();
-        trainer.setUserId(4L);
+        trainer.setTrainerId(4L);
         trainer.setUserName("Old.Name");
         trainerStorage.put(4L, trainer);
 
@@ -75,7 +75,7 @@ class TrainerDAOImplTest {
     @Test
     void testGetAllUsers() {
         Trainer t1 = new Trainer();
-        t1.setUserId(5L);
+        t1.setTrainerId(5L);
         trainerStorage.put(5L, t1);
 
         Map<Long, Trainer> allUsers = trainerDAO.getAll();

@@ -1,5 +1,6 @@
 package com.epamtask.facade;
 
+
 import com.epamtask.model.Training;
 import com.epamtask.model.TrainingType;
 
@@ -14,4 +15,7 @@ public interface TrainingFacade {
     Map<Long, Training> getTrainingsByTrainerId(Long trainerId);
     Map<Long, Training> getTrainingsByTraineeId(Long traineeId);
     List<Training> getAllTrainings();
+
+    List<Training> getTrainingsByTraineeUsernameAndCriteria(String traineeUsername, Date fromDate, Date toDate, String trainerName, String trainingType);
+    List<Training> getTrainingsByTrainerUsernameAndCriteria(String trainerUsername, Date fromDate, Date toDate, String traineeName);
 }

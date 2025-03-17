@@ -1,32 +1,38 @@
 package com.epamtask.service.impl;
 
-import com.epamtask.aspect.Loggable;
-import com.epamtask.dao.TraineeDAO;
-import com.epamtask.dao.TrainerDAO;
+import com.epamtask.aspect.annotation.Authenticated;
+import com.epamtask.aspect.annotation.Loggable;
+import com.epamtask.model.Trainee;
 import com.epamtask.model.Trainer;
 import com.epamtask.service.TrainerService;
+import com.epamtask.storege.datamodes.TrainerStorage;
 import com.epamtask.utils.PasswordGenerator;
 import com.epamtask.utils.UserNameGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class TrainerServiceImpl implements TrainerService {
-    private final TrainerDAO trainerDAO;
-    private final TraineeDAO traineeDAO;
+
+    private final TrainerStorage trainerStorage;
     private final UserNameGenerator userNameGenerator;
 
-    @Autowired
-    public TrainerServiceImpl(TrainerDAO trainerDAO, TraineeDAO traineeDAO, UserNameGenerator userNameGenerator) {
-        this.trainerDAO = trainerDAO;
-        this.traineeDAO = traineeDAO;
+    public TrainerServiceImpl(
+            @Value("${data.source}") String dataSource,
+            @Qualifier("databaseTrainerStorage") TrainerStorage databaseStorage,
+            @Qualifier("fileTrainerStorage") TrainerStorage fileStorage,
+            UserNameGenerator userNameGenerator
+    ) {
+        this.trainerStorage = "DATABASE".equalsIgnoreCase(dataSource) ? databaseStorage : fileStorage;
         this.userNameGenerator = userNameGenerator;
     }
-
     @Loggable
     @Override
     public void createTrainer(Long userId, String firstName, String lastName, String specialization) {
@@ -39,68 +45,115 @@ public class TrainerServiceImpl implements TrainerService {
         if (specialization == null || specialization.isBlank()) {
             throw new IllegalArgumentException("Specialization is required");
         }
-        if (trainerDAO.findById(userId).isPresent()) {
+        if (trainerStorage.findById(userId).isPresent()) {
             throw new IllegalArgumentException("Trainer with ID " + userId + " already exists");
         }
 
-        String uniqueUsername = userNameGenerator.generateUserName(
-                firstName,
-                lastName,
-                traineeDAO.getAll(),
-                trainerDAO.getAll()
-        );
+        Map<Long, Trainee> emptyTraineeMap = Map.of();
+        Map<Long, Trainer> trainerMap = trainerStorage.findAll().stream()
+                .collect(Collectors.toMap(
+                        Trainer::getTrainerId,
+                        Function.identity(),
+                        (existing, replacement) -> existing,
+                        java.util.LinkedHashMap::new
+                ));
+        String uniqueUsername = userNameGenerator.generateUserName(firstName, lastName, emptyTraineeMap, trainerMap);
 
-        Trainer trainer = new Trainer(userId, firstName, lastName, specialization);
+        Trainer trainer = new Trainer(userId, firstName, lastName, specialization, false);
         trainer.setUserName(uniqueUsername);
         trainer.setPassword(PasswordGenerator.generatePassword());
         trainer.setActive(true);
 
-        trainerDAO.create(userId, trainer);
+        trainerStorage.save(trainer);
     }
 
     @Loggable
+    @Authenticated
+    @Override
     public void updateTrainer(Trainer trainer) {
-        if (trainer == null || trainer.getUserId() == null) {
-            throw new IllegalArgumentException("Trainer and User ID cannot be null");
+        if (trainer == null || trainer.getTrainerId() == null) {
+            throw new IllegalArgumentException("Trainer and ID cannot be null");
         }
-        if (!trainerDAO.findById(trainer.getUserId()).isPresent()) {
-            throw new IllegalArgumentException("Trainer with ID " + trainer.getUserId() + " does not exist");
-        }
-
-        trainerDAO.update(trainer);
+        trainerStorage.save(trainer);
     }
 
     @Loggable
+    @Authenticated
+    @Override
     public Optional<Trainer> getTrainerById(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID cannot be null");
-        }
-        return trainerDAO.findById(id);
+        return trainerStorage.findById(id);
     }
 
     @Loggable
+    @Authenticated
+    @Override
     public Optional<Trainer> getTrainerByUsername(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
-        }
-        return trainerDAO.findByUsername(username);
+        return trainerStorage.findByUsername(username);
     }
 
+    @Loggable
+    @Authenticated
     @Override
     public List<Trainer> getAllTrainers() {
-        return new ArrayList<>(trainerDAO.getAll().values());
+        return trainerStorage.findAll();
     }
 
     @Loggable
+    @Authenticated
     public void deleteTrainer(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID cannot be null");
         }
-
-        if (!trainerDAO.findById(id).isPresent()) {
-            throw new IllegalArgumentException("Trainer with ID " + id + " does not exist");
+        trainerStorage.deleteById(id);
+    }
+    @Loggable
+    @Authenticated
+    @Override
+    public void updatePassword(String username, String newPassword) {
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("New password cannot be null or empty");
         }
 
-        trainerDAO.deleteById(id);
+        trainerStorage.findByUsername(username)
+                .ifPresent(trainer -> {
+                    trainer.setPassword(newPassword);
+                    trainerStorage.save(trainer);
+                });
     }
+
+    @Loggable
+    @Authenticated
+    @Override
+    public void activateUser(String username) {
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+
+        trainerStorage.findByUsername(username)
+                .ifPresent(trainer -> {
+                    trainer.setActive(true);
+                    trainerStorage.save(trainer);
+                });
+    }
+
+    @Loggable
+    @Authenticated
+    @Override
+    public void deactivateUser(String username) {
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+
+        trainerStorage.findByUsername(username)
+                .ifPresent(trainer -> {
+                    trainer.setActive(false);
+                    trainerStorage.save(trainer);
+                });
+    }
+
+
+
 }

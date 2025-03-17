@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader.validation;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.model.Trainee;
 import com.epamtask.model.Trainer;
 import com.epamtask.model.Training;

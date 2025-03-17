@@ -14,7 +14,7 @@ class TraineeValidatorTest {
 
     @Test
     void testValidTrainee() {
-        Trainee trainee = new Trainee(1L, "John", "Doe", "Address", new Date(System.currentTimeMillis() - 10000));
+        Trainee trainee = new Trainee(1L, "John", "Doe", "Address", new Date(System.currentTimeMillis() - 10000),true);
         trainee.setUserName("John.Doe");
         trainee.setPassword("secret");
         List<String> errors = traineeValidator.validate(List.of(trainee));
@@ -23,7 +23,7 @@ class TraineeValidatorTest {
 
     @Test
     void testInvalidTrainee() {
-        Trainee trainee = new Trainee(null, "", " ", "Address", new Date(System.currentTimeMillis() + 10000));
+        Trainee trainee = new Trainee(null, "", " ", "Address", new Date(System.currentTimeMillis() + 10000),true);
         trainee.setUserName("");
         trainee.setPassword("");
         List<String> errors = traineeValidator.validate(List.of(trainee));

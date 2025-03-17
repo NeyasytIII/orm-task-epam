@@ -24,7 +24,7 @@ class UserNameGeneratorTest {
         Map<Long, Trainee> traineeMap = new HashMap<>();
         Map<Long, Trainer> trainerMap = new HashMap<>();
         Trainee trainee = new Trainee();
-        trainee.setUserId(1L);
+        trainee.setTraineeId(1L);
         trainee.setUserName("John.Doe");
         traineeMap.put(1L, trainee);
 
@@ -38,7 +38,7 @@ class UserNameGeneratorTest {
         Map<Long, Trainee> traineeMap = new HashMap<>();
         Map<Long, Trainer> trainerMap = new HashMap<>();
         Trainer trainer = new Trainer();
-        trainer.setUserId(1L);
+        trainer.setTrainerId(1L);
         trainer.setUserName("John.Doe");
         trainerMap.put(1L, trainer);
 
@@ -52,12 +52,12 @@ class UserNameGeneratorTest {
         Map<Long, Trainee> traineeMap = new HashMap<>();
         Map<Long, Trainer> trainerMap = new HashMap<>();
         Trainee t1 = new Trainee();
-        t1.setUserId(1L);
+        t1.setTraineeId(1L);
         t1.setUserName("John.Doe");
         traineeMap.put(1L, t1);
 
         Trainer tr1 = new Trainer();
-        tr1.setUserId(2L);
+        tr1.setTrainerId(2L);
         tr1.setUserName("John.Doe1");
         trainerMap.put(2L, tr1);
 

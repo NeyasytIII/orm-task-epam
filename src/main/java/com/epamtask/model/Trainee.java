@@ -1,45 +1,92 @@
 package com.epamtask.model;
 
-import java.util.Date;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
 public class Trainee extends User {
-    private Long userId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("userId")
+    private Long traineeId;
+
+    @Column(nullable = false)
     private String address;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Column(nullable = false)
     private Date birthdayDate;
 
-    public Trainee(Long userId, String firstName, String lastName, String address, Date birthdayDate) {
-        super(firstName, lastName);
-        this.userId = userId;
-        this.address = address;
-        this.birthdayDate = birthdayDate;
-    }
+    @ManyToMany(mappedBy = "trainees")
+    private Set<Trainer> trainers = new HashSet<>();
+
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Training> trainings = new ArrayList<>();
 
     public Trainee() {
     }
 
-    public Long getUserId() {
-        return userId;
+    public Trainee(
+            Long traineeId,
+            String firstName,
+            String lastName,
+            String address,
+            Date birthdayDate,
+            boolean isActive
+    ) {
+        super(firstName, lastName, isActive);
+        this.traineeId = traineeId;
+        this.address = address;
+        this.birthdayDate = birthdayDate;
+    }
+
+    public Long getTraineeId() {
+        return traineeId;
+    }
+
+    public void setTraineeId(Long traineeId) {
+        this.traineeId = traineeId;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public Date getBirthdayDate() {
-        return birthdayDate;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public void setAddress(String address) {
         this.address = address;
     }
 
+    public Date getBirthdayDate() {
+        return birthdayDate;
+    }
+
     public void setBirthdayDate(Date birthdayDate) {
         this.birthdayDate = birthdayDate;
+    }
+
+    public Set<Trainer> getTrainers() {
+        return trainers;
+    }
+
+    public void setTrainers(Set<Trainer> trainers) {
+        this.trainers = trainers;
+    }
+
+    public List<Training> getTrainings() {
+        return trainings;
+    }
+
+    public void setTrainings(List<Training> trainings) {
+        this.trainings = trainings;
     }
 
     @Override
@@ -47,25 +94,27 @@ public class Trainee extends User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trainee trainee = (Trainee) o;
-        return Objects.equals(userId, trainee.userId) && Objects.equals(address, trainee.address) && Objects.equals(birthdayDate, trainee.birthdayDate);
+        return Objects.equals(traineeId, trainee.traineeId)
+                && Objects.equals(address, trainee.address)
+                && Objects.equals(birthdayDate, trainee.birthdayDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, address, birthdayDate);
+        return Objects.hash(traineeId, address, birthdayDate);
     }
 
     @Override
     public String toString() {
         return "Trainee{" +
-                "userId=" + userId +
-                ", firstName='" + this.getFirstName() + '\'' +
-                ", lastName='" + this.getLastName() + '\'' +
-                ", userName='" + this.getUserName() + '\'' +
+                "userId=" + traineeId +
+                ", firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", userName='" + getUserName() + '\'' +
                 ", address='" + address + '\'' +
                 ", birthday='" + birthdayDate + '\'' +
-                ", password='" + this.getPassword() + '\'' +
-                ", isActive=" + this.isActive() +
+                ", password='" + getPassword() + '\'' +
+                ", isActive=" + isActive() +
                 '}';
     }
 }

@@ -18,8 +18,8 @@ class TrainingValidatorTest {
 
     @Test
     void validTraining() {
-        Trainee trainee = new Trainee(1L, "Alice", "Smith", "Addr", new Date(System.currentTimeMillis() - 1000));
-        Trainer trainer = new Trainer(2L, "John", "Doe", "Fitness");
+        Trainee trainee = new Trainee(1L, "Alice", "Smith", "Addr", new Date(System.currentTimeMillis() - 1000),true);
+        Trainer trainer = new Trainer(2L, "John", "Doe", "Fitness",true);
         Date trainingDate = new Date(System.currentTimeMillis() - 2000);
         Training training = new Training(100L, 1L, 2L, "Yoga", TrainingType.STRENGTH, trainingDate, "60 minutes");
         Map<Long, Trainee> traineeStorage = new HashMap<>();

@@ -14,4 +14,6 @@ public interface TrainingService {
     Map<Long, Training> getTrainingsByTrainerId(Long trainerId);
     Map<Long, Training> getTrainingsByTraineeId(Long traineeId);
     List<Training> getAllTrainings();
+    List<Training> getTrainingsByTraineeUsernameAndCriteria(String traineeUsername, Date fromDate, Date toDate, String trainerName, String trainingType);
+    List<Training> getTrainingsByTrainerUsernameAndCriteria(String trainerUsername, Date fromDate, Date toDate, String traineeName);
 }

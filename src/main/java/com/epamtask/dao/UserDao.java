@@ -1,6 +1,5 @@
 package com.epamtask.dao;
 
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserDao<T> extends Dao<Long, T> {
@@ -8,4 +7,9 @@ public interface UserDao<T> extends Dao<Long, T> {
     Optional<T> findById(Long id);
     Optional<T> findByUsername(String username);
     void deleteById(Long id);
+
+    void deleteByUsername(String username);
+    void updatePassword(String username, String newPassword);
+    void activateUser(String username);
+    void deactivateUser(String username);
 }

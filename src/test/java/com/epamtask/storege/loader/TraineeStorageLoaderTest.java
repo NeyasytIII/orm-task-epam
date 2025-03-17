@@ -60,8 +60,8 @@ class TraineeStorageLoaderTest {
     @Test
     void testLoadValidTrainees() {
         traineeStorageLoader = new TraineeStorageLoader(resourceLoader, validTraineeFilePath, new FileValidator(), traineeFileReader, traineeValidator, traineeUserNameVerifier);
-        Trainee trainee1 = new Trainee(1L, "John", "Doe", "Some address", new Date());
-        Trainee trainee2 = new Trainee(2L, "Jane", "Smith", "Another address", new Date());
+        Trainee trainee1 = new Trainee(1L, "John", "Doe", "Some address", new Date(),true);
+        Trainee trainee2 = new Trainee(2L, "Jane", "Smith", "Another address", new Date(),true);
         try (MockedStatic<FileValidator> fileValidatorMock = mockStatic(FileValidator.class)) {
             fileValidatorMock.when(() -> FileValidator.isFileValid(resource, validTraineeFilePath)).thenReturn(true);
             when(traineeFileReader.readFromFile(resource,Trainee.class)).thenReturn(List.of(trainee1, trainee2));

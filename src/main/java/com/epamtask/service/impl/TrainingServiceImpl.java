@@ -1,32 +1,34 @@
 package com.epamtask.service.impl;
 
-import com.epamtask.aspect.Loggable;
-import com.epamtask.dao.TraineeDAO;
-import com.epamtask.dao.TrainerDAO;
-import com.epamtask.dao.TrainingDAO;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.model.Training;
 import com.epamtask.model.TrainingType;
 import com.epamtask.service.TrainingService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epamtask.storege.datamodes.TrainingStorage;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TrainingServiceImpl implements TrainingService {
-    private final TrainingDAO trainingDAO;
-    private final TraineeDAO traineeDAO;
-    private final TrainerDAO trainerDAO;
 
-    @Autowired
-    public TrainingServiceImpl(TrainingDAO trainingDAO, TraineeDAO traineeDAO, TrainerDAO trainerDAO) {
-        this.trainingDAO = trainingDAO;
-        this.traineeDAO = traineeDAO;
-        this.trainerDAO = trainerDAO;
+    private final TrainingStorage trainingStorage;
+
+    public TrainingServiceImpl(
+            @Value("${data.source}") String dataSource,
+            @Qualifier("databaseTrainingStorage") TrainingStorage databaseStorage,
+            @Qualifier("fileTrainingStorage") TrainingStorage fileStorage
+    ) {
+        this.trainingStorage = "DATABASE".equalsIgnoreCase(dataSource) ? databaseStorage : fileStorage;
     }
 
-    @Loggable
     @Override
+    @Loggable
     public void createTraining(Long trainingId, Long trainerId, Long traineeId, String trainingName,
                                TrainingType type, Date trainingDate, String trainingDuration) {
         if (trainingId == null || trainingId <= 0) {
@@ -36,7 +38,7 @@ public class TrainingServiceImpl implements TrainingService {
             throw new IllegalArgumentException("Trainer ID must be positive");
         }
         if (traineeId == null || traineeId <= 0) {
-            throw new IllegalArgumentException("Trainee ID must be a positive number");
+            throw new IllegalArgumentException("Trainee ID must be positive");
         }
         if (trainingName == null || trainingName.isBlank()) {
             throw new IllegalArgumentException("Training name is required");
@@ -50,46 +52,66 @@ public class TrainingServiceImpl implements TrainingService {
         if (trainingDuration == null || trainingDuration.isBlank()) {
             throw new IllegalArgumentException("Training duration is required");
         }
-        if (trainingDAO.findById(trainingId).isPresent()) {
-            throw new IllegalArgumentException("Training ID " + trainingId + " already exists");
-        }
-        if (!trainerDAO.findById(trainerId).isPresent()) {
-            throw new IllegalArgumentException("Trainer with ID " + trainerId + " does not exist");
-        }
-        if (!traineeDAO.findById(traineeId).isPresent()) {
-            throw new IllegalArgumentException("Trainee with ID " + traineeId + " does not exist");
+        if (trainingStorage.findById(trainingId).isPresent()) {
+            throw new IllegalArgumentException("Training with ID " + trainingId + " already exists");
         }
 
         Training training = new Training(trainingId, traineeId, trainerId, trainingName, type, trainingDate, trainingDuration);
-        trainingDAO.create(trainingId, training);
+        trainingStorage.save(training);
     }
 
+    @Override
     @Loggable
     public Optional<Training> getTrainingById(Long trainingId) {
         if (trainingId == null) {
             throw new IllegalArgumentException("Training ID cannot be null");
         }
-        return trainingDAO.findById(trainingId);
+        return trainingStorage.findById(trainingId);
     }
 
+    @Override
     @Loggable
     public Map<Long, Training> getTrainingsByTrainerId(Long trainerId) {
         if (trainerId == null) {
             throw new IllegalArgumentException("Trainer ID cannot be null");
         }
-        return trainingDAO.findByTrainerId(trainerId);
+        return trainingStorage.findByTrainerId(trainerId);
     }
 
+    @Override
     @Loggable
     public Map<Long, Training> getTrainingsByTraineeId(Long traineeId) {
         if (traineeId == null) {
             throw new IllegalArgumentException("Trainee ID cannot be null");
         }
-        return trainingDAO.findByTraineeId(traineeId);
+        return trainingStorage.findByTraineeId(traineeId);
     }
 
     @Override
+    @Loggable
     public List<Training> getAllTrainings() {
-        return new ArrayList<>(trainingDAO.getAll().values());
+        List<Training> result = trainingStorage.findAll();
+        if (result == null || result.isEmpty()) {
+            throw new IllegalStateException("No trainings found");
+        }
+        return result;
+    }
+
+    @Override
+    @Loggable
+    public List<Training> getTrainingsByTraineeUsernameAndCriteria(String traineeUsername, Date fromDate, Date toDate, String trainerName, String trainingType) {
+        if (traineeUsername == null || traineeUsername.isBlank()) {
+            throw new IllegalArgumentException("Trainee username is required");
+        }
+        return trainingStorage.findByTraineeUsernameAndCriteria(traineeUsername, fromDate, toDate, trainerName, trainingType);
+    }
+
+    @Override
+    @Loggable
+    public List<Training> getTrainingsByTrainerUsernameAndCriteria(String trainerUsername, Date fromDate, Date toDate, String traineeName) {
+        if (trainerUsername == null || trainerUsername.isBlank()) {
+            throw new IllegalArgumentException("Trainer username is required");
+        }
+        return trainingStorage.findByTrainerUsernameAndCriteria(trainerUsername, fromDate, toDate, traineeName);
     }
 }

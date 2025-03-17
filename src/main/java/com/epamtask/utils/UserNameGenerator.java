@@ -1,6 +1,6 @@
 package com.epamtask.utils;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.model.Trainee;
 import com.epamtask.model.Trainer;
 import org.springframework.stereotype.Component;

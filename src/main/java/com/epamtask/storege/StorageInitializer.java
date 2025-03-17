@@ -1,7 +1,7 @@
 package com.epamtask.storege;
 
 import com.epamtask.exception.InvalidDataException;
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.model.Trainee;
 import com.epamtask.model.Trainer;
 import com.epamtask.model.Training;
@@ -9,12 +9,10 @@ import com.epamtask.storege.loader.TraineeStorageLoader;
 import com.epamtask.storege.loader.TrainerStorageLoader;
 import com.epamtask.storege.loader.TrainingStorageLoader;
 import jakarta.annotation.PostConstruct;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@PropertySource("classpath:application.properties")
 @Component
 public class StorageInitializer {
 

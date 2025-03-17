@@ -1,5 +1,6 @@
 package com.epamtask.facade;
 
+
 import com.epamtask.model.Trainer;
 
 import java.util.List;
@@ -11,4 +12,7 @@ public interface TrainerFacade {
     Optional<Trainer> getTrainerById(Long id);
     Optional<Trainer> getTrainerByUsername(String username);
     List<Trainer> getAllTrainers();
+    void updatePassword(String username, String newPassword);
+    void activateUser(String username);
+    void deactivateUser(String username);
 }

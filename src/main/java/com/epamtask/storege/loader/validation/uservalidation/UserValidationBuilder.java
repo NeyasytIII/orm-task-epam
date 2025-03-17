@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader.validation.uservalidation;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 
 import java.util.function.Predicate;
 import java.util.ArrayList;

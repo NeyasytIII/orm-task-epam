@@ -57,12 +57,12 @@ class StorageInitializerTest {
     void testLoadDataSuccess() {
         doAnswer(invocation -> {
             Map<Long, Trainee> map = invocation.getArgument(0);
-            map.put(1L, new Trainee(1L, "Alice", "Brown", "Address 1", null));
+            map.put(1L, new Trainee(1L, "Alice", "Brown", "Address 1", null,true));
             return null;
         }).when(traineeLoader).loadTrainees(any());
         doAnswer(invocation -> {
             Map<Long, Trainer> map = invocation.getArgument(0);
-            map.put(10L, new Trainer(10L, "Bob", "Smith", "Strength Training"));
+            map.put(10L, new Trainer(10L, "Bob", "Smith", "Strength Training",true));
             return null;
         }).when(trainerLoader).loadTrainers(any());
         doAnswer(invocation -> {

@@ -1,6 +1,6 @@
 package com.epamtask.storege.loader.validation.uservalidation;
 
-import com.epamtask.aspect.Loggable;
+import com.epamtask.aspect.annotation.Loggable;
 import com.epamtask.model.Trainer;
 
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ public class TrainerValidator {
     public List<String> validate(List<Trainer> trainers) {
         return trainers.stream()
                 .flatMap(t -> new UserValidationBuilder<Trainer>()
-                        .addRule(tr -> tr.getUserId() != null && tr.getUserId() > 0, "Invalid trainer ID")
+                        .addRule(tr -> tr.getTrainerId() != null && tr.getTrainerId() > 0, "Invalid trainer ID")
                         .addRule(tr -> tr.getFirstName() != null && !tr.getFirstName().isBlank(), "First name is invalid")
                         .addRule(tr -> tr.getLastName() != null && !tr.getLastName().isBlank(), "Last name is invalid")
                         .addRule(tr -> tr.getUserName() != null && !tr.getUserName().isBlank(), "UserName is invalid")
